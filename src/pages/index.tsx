@@ -70,55 +70,55 @@ export default function Login() {
             </div>
           )}
 
-              <form onSubmit={onSubmit} className="space-y-4 bg-transparent">
-                <div className="form-group">
-                  <label className="input-label">E-mail</label>
-                  <input
-                    type="email"
-                    className="input-mask"
-                    placeholder="ex: nome@empresa.com"
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                    required
-                    autoComplete="username"
-                  />
-                </div>
+          <form onSubmit={onSubmit} className="space-y-4">
+            <div className="form-group">
+              <label className="input-label">E-mail</label>
+              <input 
+                type="email"
+                className="input-field"
+                placeholder="Digite seu e-mail"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                required
+                autoComplete="username"
+              />
+            </div>
 
-                <div className="form-group">
-                  <label className="input-label">Senha</label>
-                  <input
-                    type="password"
-                    className="input-mask"
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                    required
-                    autoComplete="current-password"
-                    minLength={6}
-                  />
-                </div>
+            <div className="form-group">
+              <label className="input-label">Senha</label>
+              <input 
+                type="password"
+                className="input-field"
+                placeholder="Digite sua senha"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                required
+                autoComplete="current-password"
+                minLength={6}
+              />
+            </div>
 
-                <button
-                  type="submit"
-                  className="btn-primary w-full mt-2 disabled:opacity-50"
-                  disabled={loading}
-                >
-                  {loading ? 'Entrando...' : 'Entrar'}
-                </button>
+            <button 
+              type="submit"
+              className="btn-primary w-full mt-6 disabled:opacity-50"
+              disabled={loading}
+            >
+              {loading ? 'Entrando...' : 'Entrar'}
+            </button>
 
-                <div className="flex justify-between items-center mt-4">
-                  <a href="/register" className="text-primary font-semibold hover:opacity-80">
-                    Criar conta
-                  </a>
-                  <button
-                    type="button"
-                    onClick={handleReset}
-                    className="text-text-secondary hover:text-primary transition-colors"
-                  >
-                    Esqueci minha senha
-                  </button>
-                </div>
-              </form>
+            <div className="flex justify-between items-center mt-4">
+              <a href="/register" className="text-primary font-semibold hover:opacity-80">
+                Criar conta
+              </a>
+              <button 
+                type="button" 
+                onClick={handleReset}
+                className="text-text-secondary hover:text-primary transition-colors"
+              >
+                Esqueci minha senha
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
