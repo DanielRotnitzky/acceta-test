@@ -1,6 +1,7 @@
 import { useState, FormEvent } from 'react';
 import { loginWithEmail, sendReset } from '@/lib/auth';
 import { useRouter } from 'next/router';
+// Left-side will show only the uploaded SVG (public/images/Esquerda.svg)
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -51,41 +52,83 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-      <form onSubmit={onSubmit} className="bg-white p-8 rounded shadow w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-4">Login</h2>
-        {error && <div className="bg-red-100 text-red-700 p-2 mb-2 rounded">{error}</div>}
-        <input 
-          type="email"
-          className="w-full p-2 border mb-2" 
-          placeholder="Email" 
-          value={email} 
-          onChange={e=>setEmail(e.target.value)}
-          required
-          autoComplete="username"
-        />
-        <input 
-          type="password" 
-          className="w-full p-2 border mb-2" 
-          placeholder="Senha" 
-          value={password} 
-          onChange={e=>setPassword(e.target.value)}
-          required
-          autoComplete="current-password"
-          minLength={6}
-        />
-        <button 
-          type="submit"
-          className="w-full py-2 bg-blue-600 text-white rounded mb-2 disabled:opacity-50" 
-          disabled={loading}
-        >
-          {loading ? 'Entrando...' : 'Entrar'}
-        </button>
-        <div className="flex justify-between items-center">
-          <a className="text-sm text-blue-600" href="/register">Cadastrar-se</a>
-          <button type="button" className="text-sm text-gray-600" onClick={handleReset}>Redefinir senha</button>
+    <div className="auth-layout">
+      <div className="auth-left flex items-center justify-center">
+        <img src="/images/Esquerda.svg" alt="Ilustração esquerda" className="max-w-full h-auto" />
+      </div>
+
+      <div className="auth-right flex items-center justify-center">
+        <div className="relative max-w-md w-full">
+          {/* Card background SVG placed from public/images/CardLogin.svg */}
+          <img src="/images/CardLogin.svg" alt="Card Login" className="w-full h-auto block" />
+
+          {/* Overlay form centered on top of the SVG card */}
+          <div className="absolute inset-0 flex items-center justify-center p-6">
+            <div className="w-full max-w-sm">
+              <div className="mb-4">
+                <h2 className="auth-title">Login</h2>
+                <p className="auth-subtitle">Digite suas credenciais para acessar a plataforma.</p>
+              </div>
+
+              {error && (
+                <div className="bg-red-100 text-red-700 p-3 rounded-md mb-4">
+                  {error}
+                </div>
+              )}
+
+              <form onSubmit={onSubmit} className="space-y-4">
+                <div className="form-group">
+                  <label className="input-label">E-mail</label>
+                  <input
+                    type="email"
+                    className="input-field"
+                    placeholder="Digite seu e-mail"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    required
+                    autoComplete="username"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="input-label">Senha</label>
+                  <input
+                    type="password"
+                    className="input-field"
+                    placeholder="Digite sua senha"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    required
+                    autoComplete="current-password"
+                    minLength={6}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="btn-primary w-full mt-2 disabled:opacity-50"
+                  disabled={loading}
+                >
+                  {loading ? 'Entrando...' : 'Entrar'}
+                </button>
+
+                <div className="flex justify-between items-center mt-4">
+                  <a href="/register" className="text-primary font-semibold hover:opacity-80">
+                    Criar conta
+                  </a>
+                  <button
+                    type="button"
+                    onClick={handleReset}
+                    className="text-text-secondary hover:text-primary transition-colors"
+                  >
+                    Esqueci minha senha
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
-      </form>
+      </div>
     </div>
   );
 }
