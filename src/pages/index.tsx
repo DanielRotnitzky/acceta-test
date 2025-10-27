@@ -57,32 +57,26 @@ export default function Login() {
         <img src="/images/Esquerda.svg" alt="Ilustração esquerda" className="max-w-full h-auto" />
       </div>
 
-      <div className="auth-right flex items-center justify-center">
-        <div className="relative max-w-md w-full">
-          {/* Card background SVG placed from public/images/CardLogin.svg */}
-          <img src="/images/CardLogin.svg" alt="Card Login" className="w-full h-auto block" />
+      <div className="auth-right">
+        <div className="auth-card">
+          <div className="mb-6">
+            <h2 className="auth-title">Login</h2>
+            <p className="auth-subtitle">Digite suas credenciais para acessar a plataforma.</p>
+          </div>
 
-          {/* Overlay form centered on top of the SVG card */}
-          <div className="absolute inset-0 flex items-center justify-center p-6">
-            <div className="w-full max-w-sm">
-              <div className="mb-4">
-                <h2 className="auth-title">Login</h2>
-                <p className="auth-subtitle">Digite suas credenciais para acessar a plataforma.</p>
-              </div>
+          {error && (
+            <div className="bg-red-100 text-red-700 p-3 rounded-md mb-4">
+              {error}
+            </div>
+          )}
 
-              {error && (
-                <div className="bg-red-100 text-red-700 p-3 rounded-md mb-4">
-                  {error}
-                </div>
-              )}
-
-              <form onSubmit={onSubmit} className="space-y-4">
+              <form onSubmit={onSubmit} className="space-y-4 bg-transparent">
                 <div className="form-group">
                   <label className="input-label">E-mail</label>
                   <input
                     type="email"
-                    className="input-field"
-                    placeholder="Digite seu e-mail"
+                    className="input-mask"
+                    placeholder="ex: nome@empresa.com"
                     value={email}
                     onChange={e => setEmail(e.target.value)}
                     required
@@ -94,8 +88,8 @@ export default function Login() {
                   <label className="input-label">Senha</label>
                   <input
                     type="password"
-                    className="input-field"
-                    placeholder="Digite sua senha"
+                    className="input-mask"
+                    placeholder="••••••••"
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                     required
@@ -125,8 +119,6 @@ export default function Login() {
                   </button>
                 </div>
               </form>
-            </div>
-          </div>
         </div>
       </div>
     </div>
