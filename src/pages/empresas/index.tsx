@@ -78,7 +78,9 @@ export default function EmpresasPage() {
       c.taxId?.includes(searchTerm) ||
       c.razaoSocial?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       c.cnpj?.includes(searchTerm);
-    const matchesStatus = !showActiveOnly || c.status === 'active' || c.status === 'ativo';
+    const matchesStatus = showActiveOnly 
+      ? (c.status === 'active' || c.status === 'ativo')
+      : (c.status === 'inactive' || c.status === 'inativo');
     
     let matchesAdvanced = true;
     if (advancedFilters) {
