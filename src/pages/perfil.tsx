@@ -34,7 +34,7 @@ export default function Perfil() {
 
   return (
     <div>
-      <Header title={`PERFIL - ${perfil.toUpperCase()}`} colorRole={perfil==='Admin' ? 'admin' : 'cliente'} />
+      <Header title={`Perfil - ${perfil}`} colorRole={perfil==='Admin' ? 'admin' : 'cliente'} />
       <main className="p-6">
         <div className="max-w-md bg-white p-6 rounded">
           <label className="block">Nome</label>

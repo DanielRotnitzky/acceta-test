@@ -14,7 +14,7 @@ import { db } from '@/lib/firebase';
 export default function EmpresasPage() {
   const [user, setUser] = useState<any>(null);
   const [role, setRole] = useState<'cliente'|'admin'>('cliente');
-  const [title, setTitle] = useState('EMPRESAS - CLIENTE');
+  const [title, setTitle] = useState('Empresas - Cliente');
   const [companies, setCompanies] = useState<any[]>([]);
   const [openModal, setOpenModal] = useState(false);
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
@@ -51,15 +51,14 @@ export default function EmpresasPage() {
           await setDoc(doc(db, 'users', u.uid), defaultData);
           
           setRole('cliente');
-          setTitle('EMPRESAS - CLIENTE');
-          await load();
-          return;
+          setTitle('Empresas - Cliente');
+        } else {
+          const data = snap.data() as any;
+          const perfil = data?.perfil || 'Cliente';
+          setRole(perfil === 'Admin' ? 'admin' : 'cliente');
+          setTitle(`Empresas - ${perfil}`);
         }
         
-        const data = snap.data() as any;
-        const perfil = data?.perfil || 'Cliente';
-        setRole(perfil === 'Admin' ? 'admin' : 'cliente');
-        setTitle(`EMPRESAS - ${perfil.toUpperCase()}`);
         await load();
       } catch (error: any) {
         console.error('Erro ao carregar perfil:', error);
@@ -72,7 +71,7 @@ export default function EmpresasPage() {
       }
     });
     return ()=>unsub();
-  }, []);
+  }, [router]);
 
   const load = async () => {
     try {
@@ -195,8 +194,8 @@ export default function EmpresasPage() {
         <div 
           className="bg-white rounded-lg border"
           style={{ 
-            height: '72px',
-            gap: '40px',
+            minHeight: '72px',
+            gap: '16px',
             opacity: 1,
             paddingTop: '16px',
             paddingRight: '24px',
@@ -207,10 +206,11 @@ export default function EmpresasPage() {
             background: '#FFFFFF',
             borderColor: '#D1D2DC',
             display: 'flex',
-            flexWrap: 'wrap'
+            flexWrap: 'wrap',
+            alignItems: 'center'
           }}
         >
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4" style={{ flexWrap: 'wrap', flex: 1 }}>
             {/* Campo de busca */}
             <div className="relative">
               <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
@@ -331,10 +331,9 @@ export default function EmpresasPage() {
                 Ver empresas ativas
               </span>
             </label>
-          </div>
 
-          {/* Botão cadastrar empresa */}
-          <button 
+            {/* Botão cadastrar empresa */}
+            <button 
               onClick={() => setOpenModal(true)} 
               className="flex items-center text-white font-medium hover:opacity-90"
               style={{ 
@@ -348,8 +347,8 @@ export default function EmpresasPage() {
                 paddingLeft: '16px',
                 borderRadius: '6px',
                 background: primaryColor,
-                marginLeft: 'auto',
-                flexShrink: 0
+                flexShrink: 0,
+                marginLeft: 'auto'
               }}
             >
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ opacity: 1 }}>
@@ -372,6 +371,7 @@ export default function EmpresasPage() {
                 Cadastrar Empresa
               </span>
             </button>
+          </div>
         </div>
 
         {/* Lista de empresas */}
@@ -383,7 +383,14 @@ export default function EmpresasPage() {
           </div>
         ) : (
           <>
-            <div className="space-y-4">
+            <div 
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(533px, 1fr))',
+                gap: '24px',
+                justifyItems: 'center'
+              }}
+            >
               {pageCompanies.map(c => <CompanyCard key={c.id} company={c} role={role} />)}
             </div>
             <div>
