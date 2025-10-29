@@ -1,6 +1,7 @@
 import { useState, FormEvent } from 'react';
 import { loginWithEmail, sendReset, logout } from '@/lib/auth';
 import { sendEmailVerification } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
 import { useRouter } from 'next/router';
 // Left-side will show only the uploaded SVG (public/images/Esquerda.svg)
 
@@ -34,6 +35,7 @@ export default function Login() {
       // Exigir e-mail verificado antes de continuar
       if (!cred.user.emailVerified) {
         try {
+          (auth as any).languageCode = 'pt';
           await sendEmailVerification(cred.user)
         } catch (err) {
           console.warn('Falha ao reenviar verificação:', err)
@@ -42,6 +44,7 @@ export default function Login() {
         setError('Seu e-mail ainda não foi verificado. Reenviamos a verificação. Confira sua caixa de entrada e a pasta de spam.')
         return
       }
+      
       router.push('/empresas')
     } catch (error: any) {
       let message = 'Erro ao fazer login'
@@ -146,7 +149,7 @@ export default function Login() {
                 onClick={handleReset}
                 className="text-black font-medium text-[14px] leading-[140%] hover:opacity-80 transition-opacity w-[400px] text-right"
               >
-                Esqueci minha senha
+                Redefinir senha
               </button>
             </div>
 

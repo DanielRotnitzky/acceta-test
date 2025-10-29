@@ -12,6 +12,7 @@ export async function registerWithEmail(name: string, email: string, password: s
   const userCred = await createUserWithEmailAndPassword(auth, email, password);
   if (auth.currentUser) {
     await updateProfile(auth.currentUser, { displayName: name });
+    try { (auth as any).languageCode = 'pt'; } catch (_) {}
     await sendEmailVerification(auth.currentUser);
   }
   return userCred;
@@ -48,4 +49,7 @@ export const logout = async () => {
   await signOut(auth);
 };
 
-export const sendReset = (email: string) => sendPasswordResetEmail(auth, email);
+export const sendReset = (email: string) => {
+  try { (auth as any).languageCode = 'pt'; } catch (_) {}
+  return sendPasswordResetEmail(auth, email);
+};

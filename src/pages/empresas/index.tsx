@@ -8,7 +8,7 @@ import { auth } from '@/lib/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { listCompanies, createCompany } from '@/services/companyService';
 import { useRouter } from 'next/router';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
 export default function EmpresasPage() {
@@ -31,14 +31,31 @@ export default function EmpresasPage() {
   useEffect(()=> {
     const unsub = onAuthStateChanged(auth, async (u) => {
       try {
-        if (!u) { router.push('/'); return; }
+        if (!u) { 
+          router.push('/'); 
+          return; 
+        }
         setUser(u);
+        
         const snap = await getDoc(doc(db, 'users', u.uid));
+        
         if (!snap.exists()) {
-          console.error('Usuário não encontrado no Firestore');
-          router.push('/');
+          // Criar documento padrão se não existir
+          const defaultData = {
+            nome: u.displayName || u.email?.split('@')[0] || 'Usuário',
+            email: u.email || '',
+            perfil: 'Cliente',
+            createdAt: new Date().toISOString()
+          };
+          
+          await setDoc(doc(db, 'users', u.uid), defaultData);
+          
+          setRole('cliente');
+          setTitle('EMPRESAS - CLIENTE');
+          await load();
           return;
         }
+        
         const data = snap.data() as any;
         const perfil = data?.perfil || 'Cliente';
         setRole(perfil === 'Admin' ? 'admin' : 'cliente');
@@ -46,8 +63,11 @@ export default function EmpresasPage() {
         await load();
       } catch (error: any) {
         console.error('Erro ao carregar perfil:', error);
+        
         if (error.code === 'failed-precondition' || error.code === 'unavailable') {
-          alert('Erro de conexão com o servidor. Verifique sua internet.');
+          alert('Erro de conexão com o servidor. Verifique sua internet e recarregue a página.');
+        } else if (error.code === 'permission-denied') {
+          alert('Sem permissão para acessar os dados. Entre em contato com o suporte.');
         }
       }
     });
@@ -186,7 +206,8 @@ export default function EmpresasPage() {
             borderWidth: '1px',
             background: '#FFFFFF',
             borderColor: '#D1D2DC',
-            display: 'flex'
+            display: 'flex',
+            flexWrap: 'wrap'
           }}
         >
           <div className="flex items-center gap-4">
@@ -205,7 +226,8 @@ export default function EmpresasPage() {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 style={{ 
-                  width: '384px',
+                  width: '100%',
+                  maxWidth: '384px',
                   height: '40px',
                   gap: '8px',
                   opacity: 1,
@@ -311,9 +333,6 @@ export default function EmpresasPage() {
             </label>
           </div>
 
-          {/* Espaçador */}
-          <div style={{ flex: 1 }}></div>
-
           {/* Botão cadastrar empresa */}
           <button 
               onClick={() => setOpenModal(true)} 
@@ -328,7 +347,9 @@ export default function EmpresasPage() {
                 paddingBottom: '8px',
                 paddingLeft: '16px',
                 borderRadius: '6px',
-                background: primaryColor
+                background: primaryColor,
+                marginLeft: 'auto',
+                flexShrink: 0
               }}
             >
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ opacity: 1 }}>

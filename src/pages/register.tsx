@@ -3,9 +3,13 @@ import { useRouter } from 'next/router';
 import { auth, db } from '@/lib/firebase';
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
+import { isValidCNPJ, onlyDigits } from '@/lib/utils';
 
 export default function Register() {
+  const [nome,setNome]=useState('');
   const [email,setEmail]=useState('');
+  const [cnpj,setCnpj]=useState('');
+  const [perfil,setPerfil]=useState<'Cliente'|'Admin'>('Cliente');
   const [senha,setSenha]=useState(''); 
   const [senha2,setSenha2]=useState('');
   const [error,setError]=useState('');
@@ -14,18 +18,23 @@ export default function Register() {
   const submit = async (e:any) => {
     e.preventDefault();
     setError('');
+    if (!nome.trim()) { setError('Informe o nome'); return; }
     if (senha !== senha2) { setError('Senhas não conferem'); return; }
     if (senha.length < 6) { setError('A senha deve ter no mínimo 6 caracteres'); return; }
     if (!email.includes('@')) { setError('Email inválido'); return; }
+    if (!isValidCNPJ(cnpj)) { setError('CNPJ inválido'); return; }
     try {
       const res = await createUserWithEmailAndPassword(auth, email, senha);
       const uid = res.user.uid;
       await setDoc(doc(db, 'users', uid), {
+        nome: nome.trim(),
         email,
-        perfil: 'Cliente',
+        cnpj: onlyDigits(cnpj),
+        perfil,
         createdAt: new Date().toISOString()
       });
       try {
+        (auth as any).languageCode = 'pt';
         await sendEmailVerification(res.user);
       } catch (err) {
         console.warn('Não foi possível enviar email de verificação:', err);
@@ -83,6 +92,18 @@ export default function Register() {
 
               <form onSubmit={submit} className="space-y-[24px]">
                 <div className="form-group">
+                  <label className="font-bold text-[14px] leading-[16px] text-[#181C4F]">Nome</label>
+                  <input
+                    className="input-field"
+                    type="text"
+                    placeholder="Seu nome completo"
+                    value={nome}
+                    onChange={e => setNome(e.target.value)}
+                    required
+                    autoComplete="name"
+                  />
+                </div>
+                <div className="form-group">
                   <label className="font-bold text-[14px] leading-[16px] text-[#181C4F]">E-mail</label>
                   <input
                     className="input-field"
@@ -96,7 +117,32 @@ export default function Register() {
                 </div>
 
                 <div className="form-group">
-                  <label className="font-bold text-[14px] leading-[16px] text-[#181C4F]">Nova Senha</label>
+                  <label className="font-bold text-[14px] leading-[16px] text-[#181C4F]">CNPJ</label>
+                  <input
+                    className="input-field"
+                    type="text"
+                    placeholder="00.000.000/0000-00"
+                    value={cnpj}
+                    onChange={e => setCnpj(e.target.value)}
+                    required
+                    inputMode="numeric"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="font-bold text-[14px] leading-[16px] text-[#181C4F]">Tipo de perfil</label>
+                  <select
+                    className="input-field"
+                    value={perfil}
+                    onChange={e => setPerfil(e.target.value as 'Cliente'|'Admin')}
+                  >
+                    <option value="Cliente">Cliente</option>
+                    <option value="Admin">Admin</option>
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label className="font-bold text-[14px] leading-[16px] text-[#181C4F]">Senha</label>
                   <input
                     type="password"
                     className="input-field"
