@@ -6,18 +6,18 @@ type Props = {
 };
 
 export default function ModalAdvancedFilters({ onClose, onApply }: Props) {
-  const [projectsMin, setProjectsMin] = useState('0');
-  const [projectsMax, setProjectsMax] = useState('0');
-  const [usersMin, setUsersMin] = useState('0');
-  const [usersMax, setUsersMax] = useState('0');
-  const [companyType, setCompanyType] = useState('');
+  const [projectsMin, setProjectsMin] = useState('');
+  const [projectsMax, setProjectsMax] = useState('');
+  const [usersMin, setUsersMin] = useState('');
+  const [usersMax, setUsersMax] = useState('');
+  const [updateDate, setUpdateDate] = useState('');
 
   const handleClear = () => {
-    setProjectsMin('0');
-    setProjectsMax('0');
-    setUsersMin('0');
-    setUsersMax('0');
-    setCompanyType('');
+    setProjectsMin('');
+    setProjectsMax('');
+    setUsersMin('');
+    setUsersMax('');
+    setUpdateDate('');
   };
 
   const handleApply = () => {
@@ -26,7 +26,7 @@ export default function ModalAdvancedFilters({ onClose, onApply }: Props) {
       projectsMax: parseInt(projectsMax) || 0,
       usersMin: parseInt(usersMin) || 0,
       usersMax: parseInt(usersMax) || 0,
-      companyType
+      updateDate
     });
     onClose();
   };
@@ -59,13 +59,16 @@ export default function ModalAdvancedFilters({ onClose, onApply }: Props) {
           style={{
             width: '388px',
             height: '27px',
-            fontFamily: 'Inter',
+            opacity: 1,
+            fontFamily: 'Inter, sans-serif',
             fontWeight: 600,
+            fontStyle: 'normal',
             fontSize: '18px',
             lineHeight: '150%',
+            letterSpacing: '0%',
             display: 'flex',
             alignItems: 'center',
-            color: '#181C4F',
+            color: 'var(--Base-brand-primary, #181C4F)',
             flex: 'none',
             alignSelf: 'stretch'
           }}
@@ -111,19 +114,25 @@ export default function ModalAdvancedFilters({ onClose, onApply }: Props) {
             >
               <label
                 style={{
-                  fontFamily: 'Inter',
+                  width: '158px',
+                  height: '16px',
+                  opacity: 1,
+                  fontFamily: 'Inter, sans-serif',
                   fontWeight: 500,
+                  fontStyle: 'normal',
                   fontSize: '14px',
                   lineHeight: '16px',
-                  color: '#181C4F'
+                  letterSpacing: '0%',
+                  color: 'var(--Count-Default-Label, #181C4F)'
                 }}
               >
-                Projetos (mínimo)
+                Quantidade de Projetos
               </label>
               <input
                 type="number"
                 value={projectsMin}
                 onChange={(e) => setProjectsMin(e.target.value)}
+                placeholder="Min"
                 style={{
                   display: 'flex',
                   flexDirection: 'row',
@@ -160,7 +169,7 @@ export default function ModalAdvancedFilters({ onClose, onApply }: Props) {
                 type="number"
                 value={projectsMax}
                 onChange={(e) => setProjectsMax(e.target.value)}
-                placeholder="máximo"
+                placeholder="Max"
                 style={{
                   display: 'flex',
                   flexDirection: 'row',
@@ -210,19 +219,25 @@ export default function ModalAdvancedFilters({ onClose, onApply }: Props) {
             >
               <label
                 style={{
-                  fontFamily: 'Inter',
+                  width: '158px',
+                  height: '16px',
+                  opacity: 1,
+                  fontFamily: 'Inter, sans-serif',
                   fontWeight: 500,
+                  fontStyle: 'normal',
                   fontSize: '14px',
                   lineHeight: '16px',
-                  color: '#181C4F'
+                  letterSpacing: '0%',
+                  color: 'var(--Count-Default-Label, #181C4F)'
                 }}
               >
-                Usuários (mínimo)
+                Quantidade de Usuários
               </label>
               <input
                 type="number"
                 value={usersMin}
                 onChange={(e) => setUsersMin(e.target.value)}
+                placeholder="Min"
                 style={{
                   display: 'flex',
                   flexDirection: 'row',
@@ -259,7 +274,7 @@ export default function ModalAdvancedFilters({ onClose, onApply }: Props) {
                 type="number"
                 value={usersMax}
                 onChange={(e) => setUsersMax(e.target.value)}
-                placeholder="máximo"
+                placeholder="Max"
                 style={{
                   display: 'flex',
                   flexDirection: 'row',
@@ -282,7 +297,7 @@ export default function ModalAdvancedFilters({ onClose, onApply }: Props) {
             </div>
           </div>
 
-          {/* Tipo de Empresa */}
+          {/* Data de Atualização */}
           <div
             style={{
               display: 'flex',
@@ -297,23 +312,30 @@ export default function ModalAdvancedFilters({ onClose, onApply }: Props) {
           >
             <label
               style={{
-                fontFamily: 'Inter',
+                width: '158px',
+                height: '16px',
+                opacity: 1,
+                fontFamily: 'Inter, sans-serif',
                 fontWeight: 500,
+                fontStyle: 'normal',
                 fontSize: '14px',
                 lineHeight: '16px',
-                color: '#000000'
+                letterSpacing: '0%',
+                color: 'var(--Count-Default-Label, #181C4F)'
               }}
             >
-              Tipo de Empresa
+              Data de Atualização
             </label>
-            <select
-              value={companyType}
-              onChange={(e) => setCompanyType(e.target.value)}
+            <input
+              type="date"
+              value={updateDate}
+              onChange={(e) => setUpdateDate(e.target.value)}
+              placeholder="Selecionar Período"
               style={{
                 display: 'flex',
                 flexDirection: 'row',
                 alignItems: 'center',
-                padding: '12px 8px',
+                padding: '8px',
                 gap: '8px',
                 width: '388px',
                 height: '40px',
@@ -325,16 +347,9 @@ export default function ModalAdvancedFilters({ onClose, onApply }: Props) {
                 fontWeight: 500,
                 fontSize: '14px',
                 lineHeight: '16px',
-                color: companyType ? '#181C4F' : '#A3A4B9'
+                color: updateDate ? '#181C4F' : '#A3A4B9'
               }}
-            >
-              <option value="">Selecione</option>
-              <option value="matriz">Matriz</option>
-              <option value="filial">Filial</option>
-              <option value="holding">Holding</option>
-              <option value="mei">MEI</option>
-              <option value="startup">Startup</option>
-            </select>
+            />
           </div>
         </div>
 
@@ -379,7 +394,7 @@ export default function ModalAdvancedFilters({ onClose, onApply }: Props) {
             Limpar
           </button>
 
-          {/* Filtrar */}
+          {/* Aplicar */}
           <button
             onClick={handleApply}
             style={{
@@ -402,7 +417,7 @@ export default function ModalAdvancedFilters({ onClose, onApply }: Props) {
               color: '#E8E8ED'
             }}
           >
-            Filtrar
+            Aplicar
           </button>
         </div>
       </div>

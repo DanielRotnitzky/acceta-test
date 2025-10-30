@@ -118,9 +118,28 @@ export default function EmpresasPage() {
       if (advancedFilters.usersMax && userCount > advancedFilters.usersMax) {
         matchesAdvanced = false;
       }
-      if (advancedFilters.companyType && advancedFilters.companyType !== 'todas') {
-        const type = c.companyType ?? c.tipoEmpresa ?? '';
-        if (type !== advancedFilters.companyType) {
+      if (advancedFilters.updateDate) {
+        try {
+          const companyDateValue = c.updatedAt || c.createdAt;
+          const companyDate = new Date(companyDateValue);
+          
+          // Normalizar data da empresa para meia-noite local (remover horas)
+          const normalizedCompanyDate = new Date(
+            companyDate.getFullYear(),
+            companyDate.getMonth(),
+            companyDate.getDate()
+          );
+          
+          // Parse da data do filtro garantindo meia-noite local
+          const filterDate = new Date(advancedFilters.updateDate + 'T00:00:00');
+          
+          const companyDateStr = normalizedCompanyDate.toLocaleDateString('pt-BR');
+          const filterDateStr = filterDate.toLocaleDateString('pt-BR');
+          
+          if (companyDateStr !== filterDateStr) {
+            matchesAdvanced = false;
+          }
+        } catch (error) {
           matchesAdvanced = false;
         }
       }
@@ -394,7 +413,16 @@ export default function EmpresasPage() {
               {pageCompanies.map(c => <CompanyCard key={c.id} company={c} role={role} />)}
             </div>
             <div>
-              <Pagination page={page} totalPages={totalPages} onPrev={() => setPage(p=>Math.max(1,p-1))} onNext={() => setPage(p=>Math.min(totalPages,p+1))} />
+              <Pagination 
+                page={page} 
+                totalPages={totalPages} 
+                totalItems={filteredCompanies.length}
+                itemsPerPage={perPage}
+                onPrev={() => setPage(p=>Math.max(1,p-1))} 
+                onNext={() => setPage(p=>Math.min(totalPages,p+1))}
+                onFirst={() => setPage(1)}
+                onLast={() => setPage(totalPages)}
+              />
             </div>
           </>
         )}

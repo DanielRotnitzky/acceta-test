@@ -10,7 +10,7 @@ type Props = {
 export default function ModalEditProfile({ onClose }: Props) {
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
-  const [empresa, setEmpresa] = useState('');
+  const [cnpj, setCnpj] = useState('');
   const [perfil, setPerfil] = useState('Cliente');
   const [loading, setLoading] = useState(true);
   const [sendingReset, setSendingReset] = useState(false);
@@ -29,7 +29,7 @@ export default function ModalEditProfile({ onClose }: Props) {
       if (userDoc.exists()) {
         const data = userDoc.data();
         setNome(data.nome || '');
-        setEmpresa((data as any).empresa || '');
+        setCnpj(data.cnpj || '');
         setPerfil(data.perfil || 'Cliente');
       }
     } catch (error) {
@@ -47,7 +47,6 @@ export default function ModalEditProfile({ onClose }: Props) {
       
       await updateDoc(doc(db, 'users', auth.currentUser.uid), {
         nome,
-        empresa,
         perfil,
         updatedAt: new Date().toISOString()
       });
@@ -267,11 +266,11 @@ export default function ModalEditProfile({ onClose }: Props) {
             />
           </div>
 
-          {/* Empresa */}
+          {/* CNPJ (readonly) */}
           <div style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: '8px'
+            gap: '4px'
           }}>
             <label style={{
               width: '43px',
@@ -281,15 +280,15 @@ export default function ModalEditProfile({ onClose }: Props) {
               fontStyle: 'normal',
               fontSize: '14px',
               lineHeight: '16px',
-              letterSpacing: '0%'
+              letterSpacing: '0%',
+              color: 'var(--Input-Disabled-Label, #7C7F78)'
             }}>
-              Empresa
+              CNPJ
             </label>
             <input
               type="text"
-              placeholder="Digite o nome da empresa"
-              value={empresa}
-              onChange={e => setEmpresa(e.target.value)}
+              value={cnpj}
+              readOnly
               style={{
                 width: '100%',
                 height: '40px',
@@ -302,7 +301,8 @@ export default function ModalEditProfile({ onClose }: Props) {
                 fontWeight: 400,
                 fontSize: '14px',
                 lineHeight: '24px',
-                color: '#181C4F',
+                color: '#A3A4B9',
+                cursor: 'not-allowed',
                 boxSizing: 'border-box'
               }}
             />
