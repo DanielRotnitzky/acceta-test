@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 type Props = {
   onClose: () => void;
@@ -8,16 +8,25 @@ type Props = {
 export default function ModalAdvancedFilters({ onClose, onApply }: Props) {
   const [projectsMin, setProjectsMin] = useState('');
   const [projectsMax, setProjectsMax] = useState('');
+  const [isMobile, setIsMobile] = useState(false);
   const [usersMin, setUsersMin] = useState('');
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mq = window.matchMedia('(max-width: 767px)');
+    const apply = () => setIsMobile(mq.matches);
+    apply();
+    mq.addEventListener('change', apply);
+    return () => mq.removeEventListener('change', apply);
+  }, []);
   const [usersMax, setUsersMax] = useState('');
   const [updateDate, setUpdateDate] = useState('');
+  
 
   const handleClear = () => {
     setProjectsMin('');
     setProjectsMax('');
     setUsersMin('');
     setUsersMax('');
-    setUpdateDate('');
   };
 
   const handleApply = () => {
@@ -33,7 +42,7 @@ export default function ModalAdvancedFilters({ onClose, onApply }: Props) {
 
   return (
     <div 
-      className="fixed inset-0 bg-black/40 z-50"
+      className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4"
       onClick={onClose}
     >
       <div 
@@ -42,13 +51,12 @@ export default function ModalAdvancedFilters({ onClose, onApply }: Props) {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'flex-start',
-          padding: '16px',
+          padding: '16px' ,
           gap: '16px',
-          position: 'absolute',
-          width: '420px',
-          left: '50%',
-          top: '50%',
-          transform: 'translate(-50%, -50%)',
+          width: '100%',
+          maxWidth: '400px',
+          maxHeight: 'calc(100vh - 32px)',
+          overflowY: 'auto',
           background: '#FFFFFF',
           boxShadow: '1px 1px 8px rgba(0, 0, 0, 0.16)',
           borderRadius: '8px'
@@ -57,8 +65,7 @@ export default function ModalAdvancedFilters({ onClose, onApply }: Props) {
         {/* Título */}
         <h2
           style={{
-            width: '388px',
-            height: '27px',
+            width: '100%',
             opacity: 1,
             fontFamily: 'Inter, sans-serif',
             fontWeight: 600,
@@ -70,7 +77,9 @@ export default function ModalAdvancedFilters({ onClose, onApply }: Props) {
             alignItems: 'center',
             color: 'var(--Base-brand-primary, #181C4F)',
             flex: 'none',
-            alignSelf: 'stretch'
+            alignSelf: 'stretch',
+            marginLeft: isMobile ? '10px' : 0,
+            marginRight: isMobile ? '10px' : 0
           }}
         >
           Filtros Avançados
@@ -84,108 +93,75 @@ export default function ModalAdvancedFilters({ onClose, onApply }: Props) {
             alignItems: 'flex-start',
             padding: '0px',
             gap: '16px',
-            width: '388px'
+            width: '100%'
           }}
         >
           {/* Projetos */}
           <div
             style={{
               display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'flex-end',
+              flexDirection: 'column',
+              alignItems: 'flex-start',
               padding: '0px',
               gap: '8px',
-              width: '388px',
-              height: '64px',
-              alignSelf: 'stretch'
+              width: '100%',
+              alignSelf: 'stretch',
+              marginLeft: isMobile ? '10px' : 0,
+            
             }}
           >
-            {/* Min */}
-            <div
+            <label
               style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-start',
-                padding: '0px',
-                gap: '8px',
-                width: '144px',
-                height: '64px'
+                opacity: 1,
+                fontFamily: 'Inter, sans-serif',
+                fontWeight: 500,
+                fontStyle: 'normal',
+                fontSize: '14px',
+                lineHeight: '16px',
+                letterSpacing: '0%',
+                color: 'var(--Count-Default-Label, #181C4F)',
+                width: '100%',
+                alignSelf: 'stretch'
               }}
             >
-              <label
-                style={{
-                  width: '158px',
-                  height: '16px',
-                  opacity: 1,
-                  fontFamily: 'Inter, sans-serif',
-                  fontWeight: 500,
-                  fontStyle: 'normal',
-                  fontSize: '14px',
-                  lineHeight: '16px',
-                  letterSpacing: '0%',
-                  color: 'var(--Count-Default-Label, #181C4F)'
-                }}
-              >
-                Quantidade de Projetos
-              </label>
+              Quantidade de Projetos
+            </label>
+            <div style={{ display: 'flex', gap: '8px', width: '80%' }}>
               <input
                 type="number"
                 value={projectsMin}
                 onChange={(e) => setProjectsMin(e.target.value)}
                 placeholder="Min"
                 style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'center',
+                  flex: 1,
+                  width: '100%',
                   padding: '8px',
-                  gap: '8px',
-                  width: '144px',
-                  height: '40px',
+                  height: '44px',
                   background: '#F8F8FA',
                   border: '1px solid #E8E8ED',
                   borderRadius: '8px',
                   fontFamily: 'Inter',
                   fontWeight: 500,
-                  fontSize: '14px',
-                  lineHeight: '16px',
+                  fontSize: '16px',
                   color: '#181C4F'
                 }}
               />
-            </div>
-
-            {/* Max */}
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-start',
-                padding: '0px',
-                gap: '8px',
-                width: '144px',
-                height: '40px'
-              }}
-            >
               <input
                 type="number"
                 value={projectsMax}
                 onChange={(e) => setProjectsMax(e.target.value)}
                 placeholder="Max"
                 style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'center',
+                  flex: 1,
+                  width: '100%',
                   padding: '8px',
-                  gap: '8px',
-                  width: '144px',
-                  height: '40px',
+                  height: '44px',
                   background: '#F8F8FA',
                   border: '1px solid #E8E8ED',
                   borderRadius: '8px',
-                  alignSelf: 'stretch',
                   fontFamily: 'Inter',
                   fontWeight: 500,
-                  fontSize: '14px',
-                  lineHeight: '16px',
+                  fontSize: '16px',
                   color: '#181C4F'
                 }}
               />
@@ -196,101 +172,67 @@ export default function ModalAdvancedFilters({ onClose, onApply }: Props) {
           <div
             style={{
               display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'flex-end',
+              flexDirection: 'column',
+              alignItems: 'flex-start',
               padding: '0px',
               gap: '8px',
-              width: '388px',
-              height: '64px',
-              alignSelf: 'stretch'
+              width: '100%',
+              alignSelf: 'stretch',
+              marginLeft: isMobile ? '10px' : 0,
+            
             }}
           >
-            {/* Min */}
-            <div
+            <label
               style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-start',
-                padding: '0px',
-                gap: '8px',
-                width: '144px',
-                height: '64px'
+                opacity: 1,
+                fontFamily: 'Inter, sans-serif',
+                fontWeight: 500,
+                fontStyle: 'normal',
+                fontSize: '14px',
+                lineHeight: '16px',
+                letterSpacing: '0%',
+                color: 'var(--Count-Default-Label, #181C4F)',
+                width: '100%'
               }}
             >
-              <label
-                style={{
-                  width: '158px',
-                  height: '16px',
-                  opacity: 1,
-                  fontFamily: 'Inter, sans-serif',
-                  fontWeight: 500,
-                  fontStyle: 'normal',
-                  fontSize: '14px',
-                  lineHeight: '16px',
-                  letterSpacing: '0%',
-                  color: 'var(--Count-Default-Label, #181C4F)'
-                }}
-              >
-                Quantidade de Usuários
-              </label>
+              Quantidade de Usuários
+            </label>
+            <div style={{ display: 'flex', gap: '8px', width: '80%' }}>
               <input
                 type="number"
                 value={usersMin}
                 onChange={(e) => setUsersMin(e.target.value)}
                 placeholder="Min"
                 style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'center',
+                  flex: 1,
+                  width: '100%',
                   padding: '8px',
-                  gap: '8px',
-                  width: '144px',
-                  height: '40px',
+                  height: '44px',
                   background: '#F8F8FA',
                   border: '1px solid #E8E8ED',
                   borderRadius: '8px',
                   fontFamily: 'Inter',
                   fontWeight: 500,
-                  fontSize: '14px',
-                  lineHeight: '16px',
+                  fontSize: '16px',
                   color: '#181C4F'
                 }}
               />
-            </div>
-
-            {/* Max */}
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-start',
-                padding: '0px',
-                gap: '8px',
-                width: '144px',
-                height: '40px'
-              }}
-            >
               <input
                 type="number"
                 value={usersMax}
                 onChange={(e) => setUsersMax(e.target.value)}
                 placeholder="Max"
                 style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'center',
+                  flex: 1,
                   padding: '8px',
-                  gap: '8px',
-                  width: '144px',
-                  height: '40px',
+                  height: '44px',
                   background: '#F8F8FA',
                   border: '1px solid #E8E8ED',
                   borderRadius: '8px',
-                  alignSelf: 'stretch',
                   fontFamily: 'Inter',
                   fontWeight: 500,
-                  fontSize: '14px',
-                  lineHeight: '16px',
+                  fontSize: '16px',
+                  width: '80%',
                   color: '#181C4F'
                 }}
               />
@@ -305,15 +247,14 @@ export default function ModalAdvancedFilters({ onClose, onApply }: Props) {
               alignItems: 'flex-start',
               padding: '0px',
               gap: '8px',
-              width: '388px',
-              height: '64px',
-              alignSelf: 'stretch'
+              width: '100%',
+              alignSelf: 'stretch',
+              marginLeft: isMobile ? '10px' : 0,
+              
             }}
           >
             <label
               style={{
-                width: '158px',
-                height: '16px',
                 opacity: 1,
                 fontFamily: 'Inter, sans-serif',
                 fontWeight: 500,
@@ -321,7 +262,8 @@ export default function ModalAdvancedFilters({ onClose, onApply }: Props) {
                 fontSize: '14px',
                 lineHeight: '16px',
                 letterSpacing: '0%',
-                color: 'var(--Count-Default-Label, #181C4F)'
+                color: 'var(--Count-Default-Label, #181C4F)',
+                width: '100%'
               }}
             >
               Data de Atualização
@@ -332,21 +274,15 @@ export default function ModalAdvancedFilters({ onClose, onApply }: Props) {
               onChange={(e) => setUpdateDate(e.target.value)}
               placeholder="Selecionar Período"
               style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
+                width: '80%',
                 padding: '8px',
-                gap: '8px',
-                width: '388px',
-                height: '40px',
+                height: '44px',
                 background: '#F8F8FA',
                 border: '1px solid #E8E8ED',
                 borderRadius: '8px',
-                alignSelf: 'stretch',
                 fontFamily: 'Inter',
                 fontWeight: 500,
-                fontSize: '14px',
-                lineHeight: '16px',
+                fontSize: '16px',
                 color: updateDate ? '#181C4F' : '#A3A4B9'
               }}
             />
@@ -361,7 +297,9 @@ export default function ModalAdvancedFilters({ onClose, onApply }: Props) {
             alignItems: 'center',
             padding: '0px',
             gap: '8px',
-            height: '40px'
+            width: '100%',
+            flexWrap: 'wrap',
+            marginLeft: isMobile ? '10px' : 0,
           }}
         >
           {/* Limpar */}
@@ -375,8 +313,9 @@ export default function ModalAdvancedFilters({ onClose, onApply }: Props) {
               alignItems: 'center',
               padding: '8px 16px',
               gap: '8px',
-              width: '103px',
-              height: '40px',
+              flex: '0 0 auto',
+              width: '100px',
+              height: '44px',
               border: '1px solid #181C4F',
               borderRadius: '6px',
               background: 'transparent',
@@ -404,8 +343,9 @@ export default function ModalAdvancedFilters({ onClose, onApply }: Props) {
               alignItems: 'center',
               padding: '8px 16px',
               gap: '8px',
-              width: '80px',
-              height: '40px',
+              flex: '0 0 auto',
+              width: '100px',
+              height: '44px',
               background: '#181C4F',
               borderRadius: '6px',
               border: 'none',

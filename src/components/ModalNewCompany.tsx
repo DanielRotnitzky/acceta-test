@@ -9,67 +9,8 @@ export default function ModalNewCompany({ onClose, onSave }: Props) {
   const [projectLimit, setProjectLimit] = useState('');
   const [tipoEmpresa, setTipoEmpresa] = useState('');
 
-  const formatCNPJ = (value: string) => {
-    const numbers = value.replace(/\D/g, '');
-    if (numbers.length <= 14) {
-      return numbers
-        .replace(/(\d{2})(\d)/, '$1.$2')
-        .replace(/(\d{3})(\d)/, '$1.$2')
-        .replace(/(\d{3})(\d)/, '$1/$2')
-        .replace(/(\d{4})(\d)/, '$1-$2');
-    }
-    return cnpj;
-  };
-
-  const validateCNPJ = (cnpj: string) => {
-    const numbers = cnpj.replace(/\D/g, '');
-    if (numbers.length !== 14) return false;
-    
-    // Rejeita CNPJs com todos os dígitos iguais
-    if (/^(\d)\1+$/.test(numbers)) return false;
-
-    // Validação dos dígitos verificadores
-    let length = numbers.length - 2;
-    let nums = numbers.substring(0, length);
-    const digits = numbers.substring(length);
-    let sum = 0;
-    let pos = length - 7;
-
-    for (let i = length; i >= 1; i--) {
-      sum += parseInt(nums.charAt(length - i)) * pos--;
-      if (pos < 2) pos = 9;
-    }
-
-    let result = sum % 11 < 2 ? 0 : 11 - (sum % 11);
-    if (result !== parseInt(digits.charAt(0))) return false;
-
-    length = length + 1;
-    nums = numbers.substring(0, length);
-    sum = 0;
-    pos = length - 7;
-
-    for (let i = length; i >= 1; i--) {
-      sum += parseInt(nums.charAt(length - i)) * pos--;
-      if (pos < 2) pos = 9;
-    }
-
-    result = sum % 11 < 2 ? 0 : 11 - (sum % 11);
-    return result === parseInt(digits.charAt(1));
-  };
-
-  const handleCNPJChange = (value: string) => {
-    const formatted = formatCNPJ(value);
-    setCnpj(formatted);
-  };
-
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!validateCNPJ(cnpj)) {
-      alert('CNPJ inválido. Por favor, verifique o número digitado.');
-      return;
-    }
-
     await onSave({
       companyName: razaoSocial,
       taxId: cnpj,
@@ -83,11 +24,9 @@ export default function ModalNewCompany({ onClose, onSave }: Props) {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50 p-4">
       <style>{`
         input::placeholder {
-          width: 440px;
-          height: 24px;
           opacity: 1;
           font-family: Inter, sans-serif;
           font-weight: 400;
@@ -98,8 +37,6 @@ export default function ModalNewCompany({ onClose, onSave }: Props) {
           color: #A3A4B9;
         }
         select option[value=""] {
-          width: 424px;
-          height: 16px;
           opacity: 1;
           font-family: Inter, sans-serif;
           font-weight: 500;
@@ -113,21 +50,24 @@ export default function ModalNewCompany({ onClose, onSave }: Props) {
       <form 
         onSubmit={submit}
         style={{
-          width: '512px',
-          height: '544px',
+          width: '100%',
+          maxWidth: '512px',
+          height: 'auto',
+          maxHeight: 'calc(100vh - 32px)',
           gap: '24px',
           opacity: 1,
-          padding: '24px',
+          padding: '20px',
           borderRadius: '16px',
           background: '#FFFFFF',
           border: '1px solid #D1D2DC',
           boxShadow: '1px 1px 8px 0px #00000029',
           display: 'flex',
-          flexDirection: 'column'
+          flexDirection: 'column',
+          overflowY: 'auto'
         }}
       >
         <div style={{
-          width: '464px',
+          width: '100%',
           height: '32px',
           gap: '8px',
           opacity: 1,
@@ -160,8 +100,8 @@ export default function ModalNewCompany({ onClose, onSave }: Props) {
         
         {/* Frame - Conteúdo */}
         <div style={{
-          width: '464px',
-          height: '376px',
+          width: '100%',
+          height: 'auto',
           gap: '20px',
           opacity: 1,
           display: 'flex',
@@ -170,8 +110,6 @@ export default function ModalNewCompany({ onClose, onSave }: Props) {
           {/* Razão Social */}
           <div>
             <label style={{
-              width: '86px',
-              height: '16px',
               opacity: 1,
               fontFamily: 'Inter, sans-serif',
               fontWeight: 500,
@@ -192,8 +130,8 @@ export default function ModalNewCompany({ onClose, onSave }: Props) {
               onChange={e=>setRazao(e.target.value)} 
               required
               style={{
-                width: '464px',
-                height: '40px',
+                width: '100%',
+                height: '44px',
                 gap: '8px',
                 opacity: 1,
                 paddingTop: '8px',
@@ -203,7 +141,8 @@ export default function ModalNewCompany({ onClose, onSave }: Props) {
                 borderRadius: '6px',
                 background: '#F8F8FA',
                 border: '1px solid #D1D2DC',
-                outline: 'none'
+                outline: 'none',
+                fontSize: '16px'
               }}
             />
           </div>
@@ -211,8 +150,6 @@ export default function ModalNewCompany({ onClose, onSave }: Props) {
           {/* CNPJ */}
           <div>
             <label style={{
-              width: '86px',
-              height: '16px',
               opacity: 1,
               fontFamily: 'Inter, sans-serif',
               fontWeight: 500,
@@ -230,12 +167,11 @@ export default function ModalNewCompany({ onClose, onSave }: Props) {
               type="text"
               placeholder="Digite o CNPJ da Empresa" 
               value={cnpj} 
-              onChange={e=>handleCNPJChange(e.target.value)} 
+              onChange={e=>setCnpj(e.target.value)} 
               required
-              maxLength={18}
               style={{
-                width: '464px',
-                height: '40px',
+                width: '100%',
+                height: '44px',
                 gap: '8px',
                 opacity: 1,
                 paddingTop: '8px',
@@ -245,7 +181,8 @@ export default function ModalNewCompany({ onClose, onSave }: Props) {
                 borderRadius: '6px',
                 background: '#F8F8FA',
                 border: '1px solid #D1D2DC',
-                outline: 'none'
+                outline: 'none',
+                fontSize: '16px'
               }}
             />
           </div>
@@ -289,8 +226,6 @@ export default function ModalNewCompany({ onClose, onSave }: Props) {
           {enableProjectLimit && (
             <div>
               <label style={{
-                width: '121px',
-                height: '16px',
                 opacity: 1,
                 fontFamily: 'Inter, sans-serif',
                 fontWeight: 500,
@@ -310,16 +245,9 @@ export default function ModalNewCompany({ onClose, onSave }: Props) {
                 value={projectLimit} 
                 onChange={e=>setProjectLimit(e.target.value)} 
                 required={enableProjectLimit}
-                min="0"
-                step="1"
-                onKeyPress={(e) => {
-                  if (!/[0-9]/.test(e.key)) {
-                    e.preventDefault();
-                  }
-                }}
                 style={{
-                  width: '464px',
-                  height: '40px',
+                  width: '100%',
+                  height: '44px',
                   gap: '8px',
                   opacity: 1,
                   paddingTop: '8px',
@@ -329,7 +257,8 @@ export default function ModalNewCompany({ onClose, onSave }: Props) {
                   borderRadius: '6px',
                   background: '#F8F8FA',
                   border: '1px solid #D1D2DC',
-                  outline: 'none'
+                  outline: 'none',
+                  fontSize: '16px'
                 }}
               />
             </div>
@@ -338,8 +267,6 @@ export default function ModalNewCompany({ onClose, onSave }: Props) {
           {/* Tipo empresa */}
           <div style={{ position: 'relative' }}>
             <label style={{
-              width: '113px',
-              height: '16px',
               opacity: 1,
               fontFamily: 'Inter, sans-serif',
               fontWeight: 500,
@@ -358,8 +285,8 @@ export default function ModalNewCompany({ onClose, onSave }: Props) {
               onChange={e=>setTipoEmpresa(e.target.value)}
               required
               style={{
-                width: '464px',
-                height: '40px',
+                width: '100%',
+                height: '44px',
                 gap: '8px',
                 opacity: 1,
                 paddingTop: '10px',
@@ -376,7 +303,7 @@ export default function ModalNewCompany({ onClose, onSave }: Props) {
                 fontFamily: 'Inter, sans-serif',
                 fontWeight: 500,
                 fontStyle: 'normal',
-                fontSize: '14px',
+                fontSize: '16px',
                 lineHeight: '20px',
                 letterSpacing: '0%',
                 color: '#A3A4B9'
@@ -470,21 +397,23 @@ export default function ModalNewCompany({ onClose, onSave }: Props) {
 
         {/* Buttons */}
         <div style={{
-          width: '464px',
-          height: '40px',
-          gap: '16px',
+          width: '100%',
+          height: 'auto',
+          gap: '8px',
           opacity: 1,
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'flex-end',
-          alignItems: 'center'
+          alignItems: 'center',
+          flexWrap: 'wrap'
         }}>
           <button 
             type="button" 
             onClick={onClose}
             style={{
-              width: '93px',
-              height: '40px',
+              minWidth: '93px',
+              flex: '1 1 auto',
+              height: '44px',
               gap: '8px',
               opacity: 1,
               paddingTop: '8px',
@@ -509,8 +438,9 @@ export default function ModalNewCompany({ onClose, onSave }: Props) {
           <button 
             type="submit"
             style={{
-              width: '100px',
-              height: '40px',
+              minWidth: '100px',
+              flex: '1 1 auto',
+              height: '44px',
               gap: '8px',
               opacity: 1,
               paddingTop: '8px',

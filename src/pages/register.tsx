@@ -80,8 +80,8 @@ export default function Register() {
               <img src="/images/Icon.svg" alt="Voltar" className="w-4 h-4" />
               Voltar
             </button>
-            <h2 className="text-[24px] font-semibold leading-[132%] text-[#0E112F] w-[400px] mt-4">Criar conta</h2>
-            <p className="text-[#464972] font-medium text-[14px] leading-[140%] w-[400px]">Preencha os dados abaixo para criar sua conta.</p>
+            <h2 className="text-[24px] font-semibold leading-[132%] text-[#0E112F] max-w-full md:w-[400px] mt-4">Criar conta</h2>
+            <p className="text-[#464972] font-medium text-[14px] leading-[140%] max-w-full md:w-[400px]">Preencha os dados abaixo para criar sua conta.</p>
           </div>
 
               {error && (
@@ -173,7 +173,7 @@ export default function Register() {
                   Criar conta
                 </button>
 
-                <div className="flex justify-center items-center gap-2 mt-4">
+                <div className="flex flex-col md:flex-row justify-center items-center gap-1 md:gap-2 mt-4">
                   <span className="text-[#747795] text-[14px] leading-[150%] font-normal">Já tem uma conta?</span>
                   <a href="/" className="text-[#181C4F] font-semibold text-[14px] leading-[24px] hover:opacity-80">
                     Voltar ao login

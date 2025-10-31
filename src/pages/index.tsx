@@ -86,8 +86,8 @@ export default function Login() {
       <div className="auth-right">
         <div className="auth-card">
           <div className="mb-6">
-            <h2 className="text-[24px] font-semibold leading-[132%] text-[#0E112F] w-[400px]">Acesse sua conta</h2>
-            <p className="text-[#464972] font-medium text-[14px] leading-[140%] w-[400px]">Entrar com e-mail e senha.</p>
+            <h2 className="text-[24px] font-semibold leading-[132%] text-[#0E112F] max-w-full md:w-[400px]">Acesse sua conta</h2>
+            <p className="text-[#464972] font-medium text-[14px] leading-[140%] max-w-full md:w-[400px]">Entrar com e-mail e senha.</p>
           </div>
 
           {error && (
@@ -143,13 +143,13 @@ export default function Login() {
               </div>
             </div>
 
-            <div className="flex justify-end mb-4">
+            <div className="flex justify-center md:justify-end mb-4">
               <button 
                 type="button"
                 onClick={handleReset}
-                className="text-black font-medium text-[14px] leading-[140%] hover:opacity-80 transition-opacity w-[400px] text-right"
+                className="text-black font-medium text-[14px] leading-[140%] hover:opacity-80 transition-opacity w-full md:w-[400px] text-center md:text-right"
               >
-                Redefinir senha
+                Esqueci minha senha
               </button>
             </div>
 
@@ -161,9 +161,9 @@ export default function Login() {
               {loading ? 'Entrando...' : 'Entrar'}
             </button>
 
-            <div className="mt-4 flex items-baseline justify-center gap-0.5">
-              <span className="text-[#747795] text-[14px] leading-[150%] font-normal w-[137px]">Não tem uma conta?</span>
-              <a href="/register" className="text-[#181C4F] font-semibold text-[14px] leading-[24px] hover:opacity-80 w-[86px]">
+            <div className="mt-4 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-0.5">
+              <span className="text-[#747795] text-[14px] leading-[150%] font-normal md:w-[137px]">Não tem uma conta?</span>
+              <a href="/register" className="text-[#181C4F] font-semibold text-[14px] leading-[24px] hover:opacity-80 md:w-[86px]">
                 Inscrever-se
               </a>
             </div>

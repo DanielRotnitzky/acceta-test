@@ -28,8 +28,10 @@ export default function CompanyCard({ company, role }: Props) {
   return (
     <div 
       style={{
-        width: '533.33px',
-        height: '373px',
+        width: '100%',
+        maxWidth: '533px',
+        height: 'auto',
+        minHeight: '350px',
         opacity: 1,
         borderRadius: '8px',
         background: 'var(--Surface-Base-surface-01, #FFFFFF)',
@@ -42,13 +44,13 @@ export default function CompanyCard({ company, role }: Props) {
       {/* Header azul */}
       <div 
         style={{
-          width: '533.33px',
-          height: '67px',
+          width: '100%',
+          minHeight: '67px',
           gap: '8px',
           opacity: 1,
-          paddingTop: '8px',
+          paddingTop: '12px',
           paddingRight: '16px',
-          paddingBottom: '8px',
+          paddingBottom: '12px',
           paddingLeft: '16px',
           borderTopLeftRadius: '8px',
           borderTopRightRadius: '8px',
@@ -61,8 +63,7 @@ export default function CompanyCard({ company, role }: Props) {
       >
         <h3 
           style={{
-            width: '501.33px',
-            height: '27px',
+            width: '100%',
             opacity: 1,
             fontFamily: 'Inter, sans-serif',
             fontWeight: 600,
@@ -72,7 +73,9 @@ export default function CompanyCard({ company, role }: Props) {
             letterSpacing: '0%',
             textAlign: 'center',
             color: 'var(--Brand-Primary-brand-primary-050, #E8E8ED)',
-            margin: 0
+            margin: 0,
+            padding: '0 8px',
+            wordBreak: 'break-word'
           }}
         >
           {displayName}
@@ -85,7 +88,8 @@ export default function CompanyCard({ company, role }: Props) {
             lineHeight: '140%',
             color: '#E8E8ED',
             margin: 0,
-            textAlign: 'center'
+            textAlign: 'center',
+            padding: '0 8px'
           }}
         >
           {displayTaxId}
@@ -150,8 +154,7 @@ export default function CompanyCard({ company, role }: Props) {
         {/* Data de atualização */}
         <div 
           style={{
-            width: '485.33px',
-            height: '20px',
+            width: '100%',
             opacity: 1,
             fontFamily: 'Inter, sans-serif',
             fontWeight: 500,
@@ -163,14 +166,15 @@ export default function CompanyCard({ company, role }: Props) {
             color: '#000000',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            padding: '0 8px'
           }}
         >
           Atualizado em: {new Date(company.updatedAt).toLocaleDateString('pt-BR')}
         </div>
 
         {/* Botões */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: 'auto', width: '100%' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: 'auto', width: '100%' }} className="company-card-buttons">
           {/* Botão Ver projetos */}
           <button
             style={{

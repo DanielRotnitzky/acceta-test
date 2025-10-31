@@ -24,9 +24,20 @@ export default function EmpresasPage() {
   const [page,setPage]=useState(1);
   const perPage = 6;
   const router = useRouter();
+  const [isMobile, setIsMobile] = useState(false);
 
   // Cor primária dinâmica baseada no role
   const primaryColor = role === 'admin' ? '#000000' : '#181C4F';
+
+  // Detectar mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(()=> {
     const unsub = onAuthStateChanged(auth, async (u) => {
@@ -231,7 +242,7 @@ export default function EmpresasPage() {
         >
           <div className="flex items-center gap-4" style={{ flexWrap: 'wrap', flex: 1 }}>
             {/* Campo de busca */}
-            <div className="relative">
+            <div className="relative ml-2.5 md:ml-0 flex-grow md:flex-grow-0">
               <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M12 12L9.106 9.107" stroke="#747795" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -243,9 +254,8 @@ export default function EmpresasPage() {
                 placeholder="Buscar por nome ou CNPJ..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-auto"
                 style={{ 
-                  width: '100%',
                   maxWidth: '384px',
                   height: '40px',
                   gap: '8px',
@@ -254,7 +264,8 @@ export default function EmpresasPage() {
                   paddingRight: '16px',
                   backgroundColor: '#F8F8FA',
                   borderColor: '#D1D2DC',
-                  color: primaryColor
+                  color: primaryColor,
+                  textAlign: (isMobile && !searchTerm) ? 'center' : 'left'
                 }}
               />
             </div>
@@ -262,7 +273,7 @@ export default function EmpresasPage() {
             {/* Botão de filtros */}
             <button 
               onClick={() => setShowAdvancedFilters(true)}
-              className="flex items-center gap-2 hover:bg-gray-50"
+              className="flex items-center gap-2 hover:bg-gray-50 mr-2.5 md:mr-0"
               style={{ 
                 width: '99px',
                 height: '40px',
@@ -272,6 +283,7 @@ export default function EmpresasPage() {
                 paddingRight: '16px',
                 paddingBottom: '8px',
                 paddingLeft: '16px',
+                justifyContent: 'center',
                 borderRadius: '6px',
                 borderWidth: '1px',
                 background: '#F8F8FA',
@@ -303,8 +315,99 @@ export default function EmpresasPage() {
               </span>
             </button>
 
-            {/* Toggle Ver empresas ativas */}
-            <label className="flex items-center gap-2 cursor-pointer">
+            {/* Container para toggle e botão (mobile) */}
+            <div className="flex items-center gap-4 ml-auto flex-nowrap md:hidden">
+              {/* Toggle Ver empresas ativas */}
+              <label className="flex items-center gap-2 cursor-pointer">
+                <div className="relative">
+                  <input
+                    type="checkbox"
+                    checked={showActiveOnly}
+                    onChange={(e) => setShowActiveOnly(e.target.checked)}
+                    className="sr-only"
+                  />
+                  <div 
+                    className="w-11 h-6 rounded-full transition-colors"
+                    style={{
+                      backgroundColor: showActiveOnly ? primaryColor : '#E8E8ED'
+                    }}
+                  >
+                    <div 
+                      style={{
+                        width: '20px',
+                        height: '20px',
+                        top: '2px',
+                        left: showActiveOnly ? '22px' : '2px',
+                        opacity: 1,
+                        background: '#F8F8FA',
+                        borderRadius: '50%',
+                        position: 'absolute',
+                        transition: 'left 0.2s ease-in-out'
+                      }}
+                    />
+                  </div>
+                </div>
+                <span
+                  style={{
+                    width: '136px',
+                    height: '16px',
+                    opacity: 1,
+                    fontWeight: 500,
+                    fontSize: '14px',
+                    lineHeight: '16px',
+                    letterSpacing: '0%',
+                    verticalAlign: 'middle',
+                    color: '#0E112F',
+                    display: 'inline-block'
+                  }}
+                >
+                  Ver empresas ativas
+                </span>
+              </label>
+
+              {/* Botão cadastrar empresa */}
+              <button 
+                onClick={() => setOpenModal(true)} 
+                className="flex items-center text-white font-medium hover:opacity-90 mr-2.5"
+                style={{ 
+                  width: '186px',
+                  height: '40px',
+                  gap: '8px',
+                  opacity: 1,
+                  paddingTop: '8px',
+                  paddingRight: '16px',
+                  paddingBottom: '8px',
+                  paddingLeft: '16px',
+                  justifyContent: 'center',
+                  borderRadius: '6px',
+                  background: primaryColor,
+                  flexShrink: 0
+                }}
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ opacity: 1 }}>
+                <path d="M5.333 8H10.667" stroke="white" strokeWidth="1.2" strokeLinecap="round"/>
+                <path d="M8 5.333V10.667" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              <span
+                style={{
+                  width: '130px',
+                  height: '24px',
+                  opacity: 1,
+                  fontWeight: 600,
+                  fontSize: '14px',
+                  lineHeight: '24px',
+                  letterSpacing: '0%',
+                  color: '#E8E8ED',
+                  display: 'inline-block'
+                }}
+              >
+                Cadastrar Empresa
+              </span>
+            </button>
+            </div>
+
+            {/* Toggle e botão (desktop) */}
+            <label className="hidden md:flex items-center gap-2 cursor-pointer">
               <div className="relative">
                 <input
                   type="checkbox"
@@ -351,10 +454,9 @@ export default function EmpresasPage() {
               </span>
             </label>
 
-            {/* Botão cadastrar empresa */}
             <button 
               onClick={() => setOpenModal(true)} 
-              className="flex items-center text-white font-medium hover:opacity-90"
+              className="hidden md:flex items-center text-white font-medium hover:opacity-90"
               style={{ 
                 width: '186px',
                 height: '40px',
@@ -364,6 +466,7 @@ export default function EmpresasPage() {
                 paddingRight: '16px',
                 paddingBottom: '8px',
                 paddingLeft: '16px',
+                justifyContent: 'center',
                 borderRadius: '6px',
                 background: primaryColor,
                 flexShrink: 0,

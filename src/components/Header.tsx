@@ -9,12 +9,26 @@ export default function Header({ title, colorRole, onLogout }: Props) {
   const router = useRouter();
   const [showMenu, setShowMenu] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [menuPosition, setMenuPosition] = useState({ top: 0, right: 0 });
   const menuRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  // Atualiza posição do menu
+  useEffect(() => {
+    if (showMenu && buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      setMenuPosition({
+        top: rect.bottom + 8,
+        right: window.innerWidth - rect.right
+      });
+    }
+  }, [showMenu]);
 
   // Fecha o menu quando clicar fora
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node) &&
+          buttonRef.current && !buttonRef.current.contains(event.target as Node)) {
         setShowMenu(false);
       }
     };
@@ -48,10 +62,13 @@ export default function Header({ title, colorRole, onLogout }: Props) {
       
       <header className="text-white border-b" style={{ backgroundColor: '#F8F8FA', borderColor: '#D1D2DC' }}>
       <div 
-        className="flex justify-between items-center mx-auto relative" 
         style={{ 
+          display: 'grid',
+          gridTemplateColumns: '1fr auto 1fr',
+          alignItems: 'center',
           backgroundColor: '#F8F8FA',
           maxWidth: '1920px',
+          margin: '0 auto',
           paddingTop: '16px',
           paddingRight: '128px',
           paddingBottom: '16px',
@@ -59,8 +76,8 @@ export default function Header({ title, colorRole, onLogout }: Props) {
           opacity: 1
         }}
       >
-        {/* Logo */}
-        <div className="flex items-center" style={{ width: '27.73px', height: '32px', opacity: 1 }}>
+        {/* Logo - Coluna 1 (esquerda) */}
+        <div style={{ transform: 'translate(10px, -20%)' }}>
           <svg width="27.73" height="32" viewBox="0 0 28 32" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M5.56135 25.414H0V32H5.56135V25.414Z" fill="#149E4B"/>
             <path d="M12.953 20.2199H7.3916V32H12.953V20.2199Z" fill="#181C4F"/>
@@ -71,27 +88,27 @@ export default function Header({ title, colorRole, onLogout }: Props) {
           </svg>
         </div>
         
-        {/* Título centralizado */}
+        {/* Título - Coluna 2 (centro) */}
         <h1 
-          className="absolute left-1/2 transform -translate-x-1/2" 
           style={{ 
             color: '#181C4F',
-            width: '1556.27px',
             height: '32px',
             opacity: 1,
             fontWeight: 600,
             fontSize: '24px',
             lineHeight: '132%',
             letterSpacing: '0%',
-            textAlign: 'center'
+            textAlign: 'center',
+            whiteSpace: 'nowrap'
           }}
         >
           {title}
         </h1>
         
-        {/* Ícone de configurações com menu dropdown */}
-        <div className="relative" ref={menuRef}>
+        {/* Ícone de configurações - Coluna 3 (direita) */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', paddingRight: '20px' }}>
           <button 
+            ref={buttonRef}
             className="p-2 hover:bg-gray-100 rounded-full"
             onClick={() => setShowMenu(!showMenu)}
           >
@@ -100,27 +117,30 @@ export default function Header({ title, colorRole, onLogout }: Props) {
               <path d="M8 10C9.1 10 10 9.105 10 8C10 6.895 9.1 6 8 6C6.9 6 6 6.895 6 8C6 9.105 6.9 10 8 10Z" stroke="#181C4F" strokeWidth="0.8" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
+        </div>
+      </div>
+    </header>
 
-          {/* Menu dropdown */}
-          {showMenu && (
-            <div 
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-start',
-                padding: '4px',
-                gap: '4px',
-                position: 'absolute',
-                width: '248px',
-                right: '0',
-                top: '100%',
-                marginTop: '8px',
-                background: '#FFFFFF',
-                boxShadow: '1px 1px 8px rgba(0, 0, 0, 0.16)',
-                borderRadius: '8px',
-                zIndex: 50
-              }}
-            >
+    {/* Menu dropdown com position fixed - fora do header */}
+    {showMenu && (
+      <div 
+        ref={menuRef}
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex-start',
+          padding: '4px',
+          gap: '4px',
+          position: 'fixed',
+          width: '248px',
+          top: `${menuPosition.top}px`,
+          right: `${menuPosition.right}px`,
+          background: '#FFFFFF',
+          boxShadow: '1px 1px 8px rgba(0, 0, 0, 0.16)',
+          borderRadius: '8px',
+          zIndex: 9999
+        }}
+      >
               {/* Editar Perfil */}
               <button
                 onClick={handleEditProfile}
@@ -315,11 +335,8 @@ export default function Header({ title, colorRole, onLogout }: Props) {
                   Sair
                 </span>
               </button>
-            </div>
-          )}
-        </div>
       </div>
-    </header>
+    )}
     </>
   );
 }
