@@ -513,11 +513,7 @@ export default function EmpresasPage() {
                 justifyItems: 'center'
               }}
             >
-              {pageCompanies.map(c => (
-                <div key={c.id} className="w-[calc(100%-20px)] md:w-auto">
-                  <CompanyCard company={c} role={role} />
-                </div>
-              ))}
+              {pageCompanies.map(c => <CompanyCard key={c.id} company={c} role={role} />)}
             </div>
             <div>
               <Pagination 
