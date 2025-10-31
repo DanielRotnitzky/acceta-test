@@ -243,12 +243,14 @@ export default function EmpresasPage() {
           <div className="flex items-center gap-4" style={{ flexWrap: 'wrap', flex: 1 }}>
             {/* Campo de busca */}
             <div className="relative ml-2.5 md:ml-0 flex-grow md:flex-grow-0">
-              <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 12L9.106 9.107" stroke="#747795" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M5.333 10.667C8.279 10.667 10.667 8.279 10.667 5.333C10.667 2.388 8.279 0 5.333 0C2.388 0 0 2.388 0 5.333C0 8.279 2.388 10.667 5.333 10.667Z" stroke="#747795" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </div>
+              {searchTerm === '' && (
+                <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 12L9.106 9.107" stroke="#747795" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M5.333 10.667C8.279 10.667 10.667 8.279 10.667 5.333C10.667 2.388 8.279 0 5.333 0C2.388 0 0 2.388 0 5.333C0 8.279 2.388 10.667 5.333 10.667Z" stroke="#747795" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+              )}
               <input
                 type="text"
                 placeholder="Buscar por nome ou CNPJ..."
@@ -533,6 +535,7 @@ export default function EmpresasPage() {
         {openModal && <ModalNewCompany onClose={()=>setOpenModal(false)} onSave={handleSave} />}
         {showAdvancedFilters && (
           <ModalAdvancedFilters 
+            initialFilters={advancedFilters}
             onClose={() => setShowAdvancedFilters(false)} 
             onApply={(filters) => {
               setAdvancedFilters(filters);

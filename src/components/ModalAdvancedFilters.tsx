@@ -3,13 +3,27 @@ import React, { useEffect, useState } from 'react';
 type Props = {
   onClose: () => void;
   onApply: (filters: any) => void;
+  initialFilters?: any;
 };
 
-export default function ModalAdvancedFilters({ onClose, onApply }: Props) {
+export default function ModalAdvancedFilters({ onClose, onApply, initialFilters }: Props) {
   const [projectsMin, setProjectsMin] = useState('');
   const [projectsMax, setProjectsMax] = useState('');
   const [isMobile, setIsMobile] = useState(false);
   const [usersMin, setUsersMin] = useState('');
+  const [usersMax, setUsersMax] = useState('');
+  const [updateDate, setUpdateDate] = useState('');
+
+  // Inicializar filtros ao abrir o modal
+  useEffect(() => {
+    if (typeof initialFilters === 'object' && initialFilters) {
+      setProjectsMin(initialFilters.projectsMin ? String(initialFilters.projectsMin) : '');
+      setProjectsMax(initialFilters.projectsMax ? String(initialFilters.projectsMax) : '');
+      setUsersMin(initialFilters.usersMin ? String(initialFilters.usersMin) : '');
+      setUsersMax(initialFilters.usersMax ? String(initialFilters.usersMax) : '');
+      setUpdateDate(initialFilters.updateDate || '');
+    }
+  }, [initialFilters]);
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const mq = window.matchMedia('(max-width: 767px)');
@@ -18,15 +32,14 @@ export default function ModalAdvancedFilters({ onClose, onApply }: Props) {
     mq.addEventListener('change', apply);
     return () => mq.removeEventListener('change', apply);
   }, []);
-  const [usersMax, setUsersMax] = useState('');
-  const [updateDate, setUpdateDate] = useState('');
   
 
   const handleClear = () => {
-    setProjectsMin('');
-    setProjectsMax('');
-    setUsersMin('');
-    setUsersMax('');
+  setProjectsMin('');
+  setProjectsMax('');
+  setUsersMin('');
+  setUsersMax('');
+  setUpdateDate('');
   };
 
   const handleApply = () => {
