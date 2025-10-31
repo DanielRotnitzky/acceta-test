@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { maskCNPJ } from '@/lib/utils';
 
 type Props = { onClose: ()=>void; onSave: (data:any)=>Promise<void> };
 
@@ -167,7 +168,7 @@ export default function ModalNewCompany({ onClose, onSave }: Props) {
               type="text"
               placeholder="Digite o CNPJ da Empresa" 
               value={cnpj} 
-              onChange={e=>setCnpj(e.target.value)} 
+              onChange={e=>setCnpj(maskCNPJ(e.target.value))} 
               required
               style={{
                 width: '100%',

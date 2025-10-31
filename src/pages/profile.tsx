@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { maskCNPJ } from '@/lib/utils';
 import Header from '@/components/Header';
 import { auth } from '@/lib/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -20,7 +21,7 @@ export default function Perfil() {
       const data = snap.data() as any;
       setName(data?.nome || '');
       setEmail(data?.email || '');
-      setCnpj(data?.cnpj || '');
+  setCnpj(data?.cnpj ? maskCNPJ(data.cnpj) : '');
       setPerfil(data?.perfil || 'Cliente');
     });
     return ()=>unsub();

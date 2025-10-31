@@ -4,6 +4,7 @@ import { auth, db } from '@/lib/firebase';
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { isValidCNPJ, onlyDigits } from '@/lib/utils';
+import { maskCNPJ } from '@/lib/utils';
 
 export default function Register() {
   const [nome,setNome]=useState('');
@@ -123,7 +124,7 @@ export default function Register() {
                     type="text"
                     placeholder="00.000.000/0000-00"
                     value={cnpj}
-                    onChange={e => setCnpj(e.target.value)}
+                    onChange={e => setCnpj(maskCNPJ(e.target.value))}
                     required
                     inputMode="numeric"
                   />
